@@ -52,5 +52,5 @@ mayor_poblacion = max(titles)
 
 
 st.write(
-    mayor_poblacion
+    f"El país con mayor población tiene: {mayor_poblacion} habitantes"
 )
