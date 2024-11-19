@@ -1,56 +1,22 @@
 import streamlit as st
+import pandas as pd
 
-st.title("🎈 My new app")
-st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
-)
+# Título de la aplicación
+st.title("Visualizador de CSV")
 
+# Subida de archivo
+uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
 
-
-
-import requests
-from bs4 import BeautifulSoup
-
-base_url = 'https://www.scrapethissite.com/pages/simple/'
-
-def fetch_page(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return BeautifulSoup(response.content, 'html.parser')
-    else:
-        print(f"Failed to retrieve {url}")
-        return None
-
-def extract_titles(soup):
-    titles = []
-    if soup:
-        product_titles = soup.find_all('span', class_='country-area')
-        for title in product_titles:
-            titles.append(title.get_text(strip=True))
-    return titles
-
-num_pages = 2
-
-all_titles = []
-
-for page in range(1, num_pages + 1):
-    if page == 1:
-        url = base_url
-    else:
-        url = f"{base_url}?page={page}"
-    print(f"Fetching page {page}: {url}")
-    soup = fetch_page(url)
-    titles = extract_titles(soup)
-    all_titles.extend(titles)
-
-mayor_poblacion = 0
-
-for cantidad in titles:
-  print(cantidad)
-
-mayor_poblacion = max(titles)
-
-
-st.write(
-    f"El país con mayor población tiene: {mayor_poblacion} habitantes"
-)
+if uploaded_file is not None:
+    try:
+        # Leer el archivo CSV a un DataFrame de pandas
+        df = pd.read_csv(uploaded_file)
+        
+        # Mostrar el DataFrame
+        st.write("Vista previa del archivo CSV:")
+        st.dataframe(df)
+        
+    except Exception as e:
+        st.error(f"Hubo un error al leer el archivo: {e}")
+else:
+    st.write("Sube un archivo CSV para empezar.")
