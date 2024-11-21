@@ -4,5 +4,5 @@ bs4
 pandas
 chardet
 openpyxl
-sklearn
+scikit-learn
 joblib
