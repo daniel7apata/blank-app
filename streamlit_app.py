@@ -126,7 +126,7 @@ if uploaded_file is not None:
         
         #Mostrar predicción
         
-        df_comparar_rf_prediction = pd.DataFrame()
+        df_comparar = pd.DataFrame()
         
         df_comparar['prediccion_RandomForestRegressor'] = rf_prediction
         df_comparar['prediccion_DecisionTreeRegressor'] = tree_prediction
