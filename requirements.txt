@@ -3,4 +3,3 @@ requests
 bs4
 pandas
 chardet
-openpyxl
