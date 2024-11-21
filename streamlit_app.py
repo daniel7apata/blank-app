@@ -4,6 +4,14 @@ import openpyxl
 import joblib
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import MinMaxScaler
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import roc_auc_score,confusion_matrix,f1_score,accuracy_score,recall_score,precision_score,classification_report
+from sklearn.metrics import mean_absolute_error, mean_squared_error,r2_score, mean_absolute_percentage_error
 
 # Título de la aplicación
 st.title("Visualizador de Archivos CSV/XLSX")
@@ -97,3 +105,48 @@ df_tablon_completo_test = pd.concat([aniomes   , features_one_hot,   features_mi
 
 st.write("Datos transformados")
 st.dataframe(df_tablon_completo_test)
+
+
+#Traer modelos ya entrenados
+best_model_tree = joblib.load('/content/best_model_tree.pkl')
+best_model_rf = joblib.load('/content/best_model_rf.pkl')
+
+
+
+#Separar features de target
+las_features = df_tablon_completo_test.drop(columns='target_total_mes_accidentes')
+la_target = df_tablon_completo_test['target_total_mes_accidentes']
+
+
+st.write("Las features")
+st.dataframe(df_tablon_completo_test)
+
+
+st.write("Las columnas features")
+st.dataframe(las_features)
+
+st.write("Las columnas target")
+st.dataframe(la_target)
+
+
+#Realizar prediccion
+tree_prediction = best_model_tree.predict(las_features)
+rf_prediction = best_model_rf.predict(las_features)
+
+
+#Mostrar predicción
+
+df_comparar_rf_prediction = pd.DataFrame()
+
+df_comparar['prediccion_RandomForestRegressor'] = rf_prediction
+df_comparar['prediccion_DecisionTreeRegressor'] = tree_prediction
+
+st.write("Comparación de predicciones")
+st.dataframe(df_comparar)
+
+
+
+
+
+
+
