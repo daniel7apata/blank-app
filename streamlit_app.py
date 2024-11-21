@@ -35,114 +35,114 @@ if uploaded_file is not None:
         st.write("Datos originales")
         st.dataframe(df_data)
 
+            #cambiar nombres de las columnas
+        cambiar_nombres = {
+          'AÑO': 'año',
+          'MES': 'mes',
+          'CONCESION': 'concesion',
+          'ENTIDAD PRESTADORA': 'entidad_prestadora',
+          'INGRESOS TOTAL': 'ingreso_total',
+          'TRAFICO TOTAL': 'trafico_total',
+          'TOTAL RECLAMOS RESUELTOS': 'total_reclamos_resueltos',
+          'TOTAL RECLAMOS PRESENTADOS': 'total_reclamos_presentados',
+          'TOTAL RECLAMOS EN PROCESO': 'total_reclamos_enproceso',
+          'TOTAL LLAMADAS EMERGENCIAS': 'total_llamadas_emerg',
+          'TOTAL ASISTENCIA MECANICA': 'total_asistencia_mecanica',
+          'TOTAL MES ACCIDENTES': 'target_total_mes_accidentes',
+        }
+        df_data = df_data.rename (columns=cambiar_nombres)
+        
+        
+        #Traer los encoders
+        
+        # Cargar el objeto `encoderMMS` desde el archivo
+        encoderMMS = joblib.load('encoderMMS.pkl')
+        
+        # Cargar el objeto `oneHE` desde el archivo
+        oneHE = joblib.load('oneHE.pkl')
+        
+        
+        
+        
+        #aislar features año y mes (*1)
+        aniomes = df_data[['año', 'mes']]
+        
+        
+        
+        #Aplicar el encoder y aislar las features OneHotEncoder (2*)
+        columnas = ['concesion','entidad_prestadora']
+        features_one_hot = pd.DataFrame(oneHE.transform(df_data[columnas]),
+                                      columns=oneHE.get_feature_names_out(columnas),
+                                      index=df_data.index)
+        
+        
+        
+        #Aplica el encoder y aislar las features MinMaxScaler (3*)
+        columnas = ['ingreso_total',	'trafico_total',	'total_reclamos_resueltos',	'total_reclamos_presentados',
+                    'total_reclamos_enproceso','total_llamadas_emerg',	'total_asistencia_mecanica']
+        
+        features_min_max = pd.DataFrame(encoderMMS.transform(df_data[columnas]),
+                                     columns=columnas,
+                                     index=df_data.index)
+        
+        
+        #aislar target
+        columna_target = df_data['target_total_mes_accidentes']
+        
+        
+        # 4 cosas:
+        # año y mes tal cual los datos originales (*1)
+        # transformacion de One Hot encoder (2*)
+        # transformacion de Min Max Scaler (3*)
+        # columna de target bajo el nombre "target_total_mes_accidentes" (*4)
+        df_tablon_completo_test = pd.concat([aniomes   , features_one_hot,   features_min_max,  columna_target],axis=1)
+        
+        st.write("Datos transformados")
+        st.dataframe(df_tablon_completo_test)
+        
+        
+        #Traer modelos ya entrenados
+        best_model_tree = joblib.load('/content/best_model_tree.pkl')
+        best_model_rf = joblib.load('/content/best_model_rf.pkl')
+        
+        
+        
+        #Separar features de target
+        las_features = df_tablon_completo_test.drop(columns='target_total_mes_accidentes')
+        la_target = df_tablon_completo_test['target_total_mes_accidentes']
+        
+        
+        st.write("Las features")
+        st.dataframe(df_tablon_completo_test)
+        
+        
+        st.write("Las columnas features")
+        st.dataframe(las_features)
+        
+        st.write("Las columnas target")
+        st.dataframe(la_target)
+        
+        
+        #Realizar prediccion
+        tree_prediction = best_model_tree.predict(las_features)
+        rf_prediction = best_model_rf.predict(las_features)
+        
+        
+        #Mostrar predicción
+        
+        df_comparar_rf_prediction = pd.DataFrame()
+        
+        df_comparar['prediccion_RandomForestRegressor'] = rf_prediction
+        df_comparar['prediccion_DecisionTreeRegressor'] = tree_prediction
+        
+        st.write("Comparación de predicciones")
+        st.dataframe(df_comparar)
+
+
     except Exception as e:
         st.error(f"Hubo un error al leer el archivo: {e}")
 else:
     st.write("Sube un archivo CSV o XLSX para empezar.")
-
-
-#cambiar nombres de las columnas
-cambiar_nombres = {
-  'AÑO': 'año',
-  'MES': 'mes',
-  'CONCESION': 'concesion',
-  'ENTIDAD PRESTADORA': 'entidad_prestadora',
-  'INGRESOS TOTAL': 'ingreso_total',
-  'TRAFICO TOTAL': 'trafico_total',
-  'TOTAL RECLAMOS RESUELTOS': 'total_reclamos_resueltos',
-  'TOTAL RECLAMOS PRESENTADOS': 'total_reclamos_presentados',
-  'TOTAL RECLAMOS EN PROCESO': 'total_reclamos_enproceso',
-  'TOTAL LLAMADAS EMERGENCIAS': 'total_llamadas_emerg',
-  'TOTAL ASISTENCIA MECANICA': 'total_asistencia_mecanica',
-  'TOTAL MES ACCIDENTES': 'target_total_mes_accidentes',
-}
-df_data = df_data.rename (columns=cambiar_nombres)
-
-
-#Traer los encoders
-
-# Cargar el objeto `encoderMMS` desde el archivo
-encoderMMS = joblib.load('encoderMMS.pkl')
-
-# Cargar el objeto `oneHE` desde el archivo
-oneHE = joblib.load('oneHE.pkl')
-
-
-
-
-#aislar features año y mes (*1)
-aniomes = df_data[['año', 'mes']]
-
-
-
-#Aplicar el encoder y aislar las features OneHotEncoder (2*)
-columnas = ['concesion','entidad_prestadora']
-features_one_hot = pd.DataFrame(oneHE.transform(df_data[columnas]),
-                              columns=oneHE.get_feature_names_out(columnas),
-                              index=df_data.index)
-
-
-
-#Aplica el encoder y aislar las features MinMaxScaler (3*)
-columnas = ['ingreso_total',	'trafico_total',	'total_reclamos_resueltos',	'total_reclamos_presentados',
-            'total_reclamos_enproceso','total_llamadas_emerg',	'total_asistencia_mecanica']
-
-features_min_max = pd.DataFrame(encoderMMS.transform(df_data[columnas]),
-                             columns=columnas,
-                             index=df_data.index)
-
-
-#aislar target
-columna_target = df_data['target_total_mes_accidentes']
-
-
-# 4 cosas:
-# año y mes tal cual los datos originales (*1)
-# transformacion de One Hot encoder (2*)
-# transformacion de Min Max Scaler (3*)
-# columna de target bajo el nombre "target_total_mes_accidentes" (*4)
-df_tablon_completo_test = pd.concat([aniomes   , features_one_hot,   features_min_max,  columna_target],axis=1)
-
-st.write("Datos transformados")
-st.dataframe(df_tablon_completo_test)
-
-
-#Traer modelos ya entrenados
-best_model_tree = joblib.load('/content/best_model_tree.pkl')
-best_model_rf = joblib.load('/content/best_model_rf.pkl')
-
-
-
-#Separar features de target
-las_features = df_tablon_completo_test.drop(columns='target_total_mes_accidentes')
-la_target = df_tablon_completo_test['target_total_mes_accidentes']
-
-
-st.write("Las features")
-st.dataframe(df_tablon_completo_test)
-
-
-st.write("Las columnas features")
-st.dataframe(las_features)
-
-st.write("Las columnas target")
-st.dataframe(la_target)
-
-
-#Realizar prediccion
-tree_prediction = best_model_tree.predict(las_features)
-rf_prediction = best_model_rf.predict(las_features)
-
-
-#Mostrar predicción
-
-df_comparar_rf_prediction = pd.DataFrame()
-
-df_comparar['prediccion_RandomForestRegressor'] = rf_prediction
-df_comparar['prediccion_DecisionTreeRegressor'] = tree_prediction
-
-st.write("Comparación de predicciones")
-st.dataframe(df_comparar)
 
 
 
