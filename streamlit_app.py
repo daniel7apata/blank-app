@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import openpyxl  # Asegúrate de que openpyxl está instalado
 
 # Título de la aplicación
 st.title("Visualizador de Archivos CSV/XLSX")
