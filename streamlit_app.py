@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import openpyxl
 
 # Título de la aplicación
 st.title("Visualizador de XLSX")
