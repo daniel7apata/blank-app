@@ -1,22 +1,29 @@
 import streamlit as st
 import pandas as pd
-import openpyxl
+import openpyxl  # Asegúrate de que openpyxl está instalado
 
 # Título de la aplicación
-st.title("Visualizador de XLSX")
+st.title("Visualizador de Archivos CSV/XLSX")
 
 # Subida de archivo
-uploaded_file = st.file_uploader("Sube un archivo CSV", type="xlsx")
+uploaded_file = st.file_uploader("Sube un archivo CSV o XLSX", type=["csv", "xlsx"])
 
 if uploaded_file is not None:
     try:
-        # Leer el archivo especificando la codificación y delimitador
-        df = pd.read_csv(uploaded_file, encoding="ISO-8859-1")  # Codificación común para evitar errores
+        # Verificar el tipo de archivo y leerlo apropiadamente
+        if uploaded_file.name.endswith(".csv"):
+            # Leer archivo CSV
+            df = pd.read_csv(uploaded_file, encoding="ISO-8859-1")
+            st.write("Vista previa del archivo CSV:")
+        elif uploaded_file.name.endswith(".xlsx"):
+            # Leer archivo XLSX
+            df = pd.read_excel(uploaded_file, engine="openpyxl")
+            st.write("Vista previa del archivo XLSX:")
         
         # Mostrar el DataFrame
-        st.write("Vista previa del archivo CSV:")
-        st.dataframe(df_data)
+        st.dataframe(df)
+
     except Exception as e:
         st.error(f"Hubo un error al leer el archivo: {e}")
 else:
-    st.write("Sube un archivo CSV para empezar.")
+    st.write("Sube un archivo CSV o XLSX para empezar.")
