@@ -5,7 +5,7 @@ import pandas as pd
 st.title("Visualizador de XLSX")
 
 # Subida de archivo
-uploaded_file = st.file_uploader("Sube un archivo CSV", type="csv")
+uploaded_file = st.file_uploader("Sube un archivo CSV", type="xlsx")
 
 if uploaded_file is not None:
     try:
