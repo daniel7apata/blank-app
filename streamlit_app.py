@@ -112,10 +112,6 @@ if uploaded_file is not None:
         la_target = df_tablon_completo_test['target_total_mes_accidentes']
         
         
-        st.write("Las features")
-        st.dataframe(df_tablon_completo_test)
-        
-        
         st.write("Las columnas features")
         st.dataframe(las_features)
         
