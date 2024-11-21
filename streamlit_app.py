@@ -24,6 +24,7 @@ if uploaded_file is not None:
             st.write("Vista previa del archivo XLSX:")
         
         # Mostrar el DataFrame
+        st.write("Datos originales")
         st.dataframe(df_data)
 
     except Exception as e:
@@ -94,5 +95,5 @@ columna_target = df_data['target_total_mes_accidentes']
 # columna de target bajo el nombre "target_total_mes_accidentes" (*4)
 df_tablon_completo_test = pd.concat([aniomes   , features_one_hot,   features_min_max,  columna_target],axis=1)
 
-
+st.write("Datos transformados")
 st.dataframe(df_tablon_completo_test)
