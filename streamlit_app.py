@@ -102,8 +102,8 @@ if uploaded_file is not None:
         
         
         #Traer modelos ya entrenados
-        best_model_tree = joblib.load('/content/best_model_tree.pkl')
-        best_model_rf = joblib.load('/content/best_model_rf.pkl')
+        best_model_tree = joblib.load('best_model_tree.pkl')
+        best_model_rf = joblib.load('best_model_rf.pkl')
         
         
         
