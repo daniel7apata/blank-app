@@ -10,16 +10,35 @@ url_objetivo = st.text_input("Link")
 if not url_objetivo:
   st.write("Ingrese link")
 else:
-  st.write("El link ingresado es: " + url_objetivo)
-  respuesta = requests.get(url_objetivo)
+  def fetch_page(url_objetivo):
+      response = requests.get(url)
+      if response.status_code == 200:
+          return BeautifulSoup(response.content, 'html.parser')
+      else:
+          print(f"Failed to retrieve {url}")
+          return None
   
-  if respuesta.status_code == 200:
-    soup = BeautifulSoup(respuesta.text, 'html.parser') #response.content
+  def extract_titles(soup):
+      titles = []
+      if soup:
+          product_titles = soup.find_all()
+          for title in product_titles:
+              titles.append(title.get_text(strip=True))
+      return titles
   
-    elements = soup.find_all()
+  num_pages = 2
   
-    for i in elements:
-      result = i.get_text(strip=True)
-      st.write(result)
-  else:
-      st.write(f'Error al acceder a la página: {respuesta.status_code}')
+  all_titles = []
+  
+  for page in range(1, num_pages + 1):
+      if page == 1:
+          url = base_url
+      else:
+          url = f"{base_url}?page={page}"
+      st.write(f"Fetching page {page}: {url}")
+      soup = fetch_page(url)
+      titles = extract_titles(soup)
+      all_titles.extend(titles)
+  
+  for idx, title in enumerate(all_titles, start=1):
+      st.write(f"{idx}. {title}")
