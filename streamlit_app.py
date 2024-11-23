@@ -6,10 +6,11 @@ from bs4 import BeautifulSoup
 st.title("Web Scrapping")
 
 url_objetivo = st.text_input("Link")
-st.write("El link ingresado es: " + url_objetivo)
+
 if not url_objetivo:
   st.write("Ingrese link")
 else:
+  st.write("El link ingresado es: " + url_objetivo)
   respuesta = requests.get(url_objetivo)
   
   if respuesta.status_code == 200:
