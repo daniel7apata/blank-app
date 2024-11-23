@@ -19,11 +19,11 @@ else:
           return None
   
   def extract_titles(soup):
-      titles = []
+      titles = ""
       if soup:
           product_titles = soup.find_all()
           for title in product_titles:
-              titles = titles + title + "\n"
+              titles += title + "\n"
       return titles
   
   num_pages = 1
@@ -38,7 +38,4 @@ else:
       st.write(f"Fetching page {page}: {url}")
       soup = fetch_page(url)
       titles = extract_titles(soup)
-      all_titles.extend(titles)
-  
-  for idx, title in enumerate(all_titles, start=1):
-      st.write(f"{idx}. {title}")
+      st.write(titles)
