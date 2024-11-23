@@ -11,7 +11,7 @@ if not url_objetivo:
   st.write("Ingrese link")
 else:
   def fetch_page(url_objetivo):
-      response = requests.get(url)
+      response = requests.get(url_objetivo)
       if response.status_code == 200:
           return BeautifulSoup(response.content, 'html.parser')
       else:
