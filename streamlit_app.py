@@ -5,13 +5,13 @@ from bs4 import BeautifulSoup
 # Título de la aplicación
 st.title("Web Scrapping")
 
-url_objetivo = st.text_input("Link")
+base_url = st.text_input("Link")
 
-if not url_objetivo:
+if not base_url:
   st.write("Ingrese link")
 else:
-  def fetch_page(url_objetivo):
-      response = requests.get(url_objetivo)
+  def fetch_page(base_url):
+      response = requests.get(base_url)
       if response.status_code == 200:
           return BeautifulSoup(response.content, 'html.parser')
       else:
