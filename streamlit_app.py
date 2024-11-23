@@ -30,7 +30,9 @@ else:
   
   all_titles = []
   
-
+  soup = fetch_page(url)
+  titles = extract_titles(soup)
+  all_titles.extend(titles)
   
   for idx, title in enumerate(all_titles, start=1):
       st.write(f"{idx}. {title}")
