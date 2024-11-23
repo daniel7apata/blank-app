@@ -23,7 +23,7 @@ else:
       if soup:
           product_titles = soup.find_all()
           for title in product_titles:
-              titles += title.get_text(strip=True) + "\n"
+              titles += title.get_text(strip=True) + "      "
       return titles
   
   num_pages = 1
