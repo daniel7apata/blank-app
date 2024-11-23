@@ -30,15 +30,7 @@ else:
   
   all_titles = []
   
-  for page in range(1, num_pages + 1):
-      if page == 1:
-          url = base_url
-      else:
-          url = f"{base_url}?page={page}"
-      st.write(f"Fetching page {page}: {url}")
-      soup = fetch_page(url)
-      titles = extract_titles(soup)
-      all_titles.extend(titles)
+
   
   for idx, title in enumerate(all_titles, start=1):
       st.write(f"{idx}. {title}")
